@@ -1,3 +1,5 @@
+# Бот не восстанавливает данные при перезагрузке.
+
 import vk_api, json
 from vk_api.longpoll import VkLongPoll, VkEventType
 from threading import Thread
