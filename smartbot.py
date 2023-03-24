@@ -1,63 +1,47 @@
-# Бот не восстанавливает данные при перезагрузке.
-
 import vk_api, json
 from vk_api.longpoll import VkLongPoll, VkEventType
 from threading import Thread
 from os.path import abspath as tdir
 from toks import main_token
-import sqlite3
+from pprint import pprint
 
 
 vk_session = vk_api.VkApi(token = main_token)
 session_api = vk_session.get_api()
 LongPoll = VkLongPoll(vk_session)
 
-def check(x):
-    file = open('data.txt', 'r', encoding = 'utf-8')
-    if str(x) in file.read():
-        return 1
-    else:
-        return 0
-    file.close()
+def write_bd(data, data_file):
+    data = json.dumps(data)
+    data = json.loads(str(data))
 
-def save_bd(users):
-	lines = []
-	for user in users:
-		lines.append(f'"id" : {user.id}, "mode" : "{user.mode}", "money" : "{user.money}", "name" : "{user.name}"')
-	lines = '\n'.join(lines)
-	with open(f'{tdir(__file__)}/data.txt'.replace('\\', '/').replace('smartbotchat.py/', ''), 'w', encoding = 'utf-8') as file:
-		file.write(lines)
-		file.close()
+    with open(data_file, "w", encoding="utf-8") as file:
+        json.dump(data, file, indent=4)
 
-def read_bd():
-	users = []
-	with open(f'{tdir(__file__)}/data.txt'.replace('\\', '/').replace('smartbotchat.py/', ''), 'r', encoding = 'utf-8') as file:
-		lines = [x.replace('\n', '') for x in file.readlines()]
-		file.close()
-	for line in lines:
-		line = eval('{' + line + '}')
-		if line != '{}':
-			users.append(User(id = line['id'], mode = line['mode'], money = line['money'], name = line['name']))
-	return users
+def read_bd(data_file):
+    with open(data_file, "r", encoding="utf-8") as file:
+        return json.load(file)
 
-def adder(x):
-    file = open('data.txt', 'a', encoding = 'utf-8')
-    file.write(f'{x}\n')
-    file.close()
-    
 
 class User:
 
-    def __init__(self, id, mode, money = 0, name = ""):
+    def __init__(self, id, mode):
         self.id = id
         self.mode = mode
-        self.money = money
-        self.name = name
+        self.money = 0
+        self.name = ""
         self.age = -1
         self.cars = 0
         self.axs = 0
         self.quest = 0
 
+data = {
+    "users" : []
+}
+
+for i in range(100):
+    data["users"].append(User().__dict__)
+
+write_bd(data, "users.json")
 
 def get_keyboard(buts):
     nb = []
@@ -228,5 +212,5 @@ for event in LongPoll.listen():
                                             sender(id, "Принято, теперь нажми выполнить, после нового сообщения напиши 10000", quest_key)
                                             user.mode = "quest"
             
-                save_bd(users)
+                
                                             
