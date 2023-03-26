@@ -39,7 +39,7 @@ data = {
 }
 
 for i in range(100):
-    data["users"].append(User(i, 0).__dict__)
+    data["users"].append(User(i, mode="mode", money=0, name="unknown", age=-1, cars=0, axs=0, quest=0).__dict__)
 
 write_bd(data, "users.json")
 
