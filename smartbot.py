@@ -24,22 +24,22 @@ def read_bd(data_file):
 
 class User:
 
-    def __init__(self, id, mode):
+    def __init__(self, id, mode="mode", money=0, name="unknown", age=-1, cars=0, axs=0, quest=0):
         self.id = id
         self.mode = mode
-        self.money = 0
-        self.name = ""
-        self.age = -1
-        self.cars = 0
-        self.axs = 0
-        self.quest = 0
+        self.money = money
+        self.name = name
+        self.age = age
+        self.cars = cars
+        self.axs = axs
+        self.quest = quest
 
 data = {
     "users" : []
 }
 
 for i in range(100):
-    data["users"].append(User().__dict__)
+    data["users"].append(User(i, 0).__dict__)
 
 write_bd(data, "users.json")
 
